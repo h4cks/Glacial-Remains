@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map proto="1.3.3">
+	<name>Glacial Remains</name>
+	<version>0.1.0</version>
+	<objective>コントロールポイントの制圧 / Capture the Control Point</objective>
+
+	<authors>
+		<author>EEE</author>
+	</authors>
+
+	<teams>
+		<team max="8" color="blue">Blue Team</team>
+		<team max="8" color="red">Red Team</team>
+		<team max="8" color="dark green">Green Team</team>
+		<team max="8" color="yellow">Yellow Team</team>
+	</teams>
+
+<!-- チームごとの初期装備 -->
+	<kits>
+		<kit name="default">
+			<item slot="2" amount="32">Golden Carrot</item>
+			<potion duration="6" amplifier="100">REGENERATION</potion>
+     		<potion duration="6" amplifier="2">DAMAGE_RESISTANCE</potion>
+     		<potion duration="4" amplifier="3">INCREASE_DAMAGE</potion>
+		</kit>
+		<kit name="blue" parents="default">
+			<helmet color="0000ff" damage="-3000" enchantment="protection explosions" bind="true">Leather Helmet</helmet><!-- damage値-3000で耐久度上がる -->
+			<boots color="0000ff" damage="-3000" enchantment="protection fall:3" bind="true">Leather Boots</boots>
+			<item slot="8" amount="64" damage="11">Stained Clay</item>
+			<item slot="16" amount="64" damage="11">Stained Glass</item>
+			<item slot="17" amount="64" damage="11">Stained Clay</item>
+			<item slot="26" amount="64" damage="11">Stained Clay</item>
+			<item slot="35" amount="64" damage="11">Stained Clay</item>
+		</kit>
+		<kit name="red" parents="default">
+			<helmet color="ff0000" damage="-3000" enchantment="protection explosions" bind="true">Leather Helmet</helmet>
+			<boots color="ff0000" damage="-3000" enchantment="protection fall:3" bind="true">Leather Boots</boots>
+			<item slot="8" amount="64" damage="14">Stained Clay</item>
+			<item slot="16" amount="64" damage="14">Stained Glass</item>
+			<item slot="17" amount="64" damage="14">Stained Clay</item>
+			<item slot="26" amount="64" damage="14">Stained Clay</item>
+			<item slot="35" amount="64" damage="14">Stained Clay</item>
+		</kit>
+		<kit name="green" parents="default">
+			<helmet color="22ff22" damage="-3000" enchantment="protection explosions" bind="true">Leather Helmet</helmet>
+			<boots color="22ff22" damage="-3000" enchantment="protection fall:3" bind="true">Leather Boots</boots>
+			<item slot="8" amount="64" damage="13">Stained Clay</item>
+			<item slot="16" amount="64" damage="13">Stained Glass</item>
+			<item slot="17" amount="64" damage="13">Stained Clay</item>
+			<item slot="26" amount="64" damage="13">Stained Clay</item>
+			<item slot="35" amount="64" damage="13">Stained Clay</item>
+		</kit>
+		<kit name="yellow" parents="default">
+			<helmet color="ffff00" damage="-3000" enchantment="protection explosions" bind="true">Leather Helmet</helmet>
+			<boots color="ffff00" damage="-3000" enchantment="protection fall:3" bind="true">Leather Boots</boots>
+			<item slot="8" amount="64" damage="4">Stained Clay</item>
+			<item slot="16" amount="64" damage="4">Stained Glass</item>
+			<item slot="17" amount="64" damage="4">Stained Clay</item>
+			<item slot="26" amount="64" damage="4">Stained Clay</item>
+			<item slot="35" amount="64" damage="4">Stained Clay</item>
+		</kit>
+	</kits>
+
+<!-- スポーン位置 -->
+	<spawns>
+		<spawn team="blue" yaw="45" kit="blue">
+			<cuboid min="62,8,-64" max="64,8,-62" />
+		</spawn>
+		<spawn team="red" yaw="135" kit="red">
+			<cuboid min="62,8,64" max="62,8,64" />
+		</spawn>
+		<spawn team="green" yaw="225" kit="green">
+			<cuboid min="-64,8,62" max="-62,8,64" />
+		</spawn>
+		<spawn team="yellow" yaw="315" kit="yellow">
+			<cuboid min="-64,8,-64" max="-62,8,-62" />
+		</spawn>
+		<default yaw="0">
+			<cuboid min="61,27,-67" max="65,27,-65" />
+		</default>
+	</spawns>
+
+<!-- フィルター定義 -->
+	<filters>
+		<filter name="not-editable" parents="deny-blocks"></filter>
+		<filter name="outside">
+			<not>
+				<void/>
+			</not>
+		</filter>
+	</filters>
+
+<!-- 領域定義 -->
+	<regions>
+		<rectangle name="map" min="-123,-123" max="123,123" /><!-- マップ全体 -->
+<!-- チーム拠点定義と保護 -->
+		<union name="Base">
+			<cuboid name="blue-base" min="46,0,-81" max="80,255,-47"/>
+			<cuboid name="red-base" min="46,0,46" max="80,255,80"/>
+			<cuboid name="green-base" min="-81,0,46" max="-47,255,80"/>
+			<cuboid name="yellow-base" min="-81,0,-81" max="-47,255,-47"/>
+		</union>
+		<apply block="not-editable" block-place="deny-all" message="You may not modify bases.">
+			<region name="Base"/>
+		</apply>
+<!-- CP定義と保護 -->
+		<union name="CP">
+			<cuboid name="center-CP" min="-14,0,-14" max="14,11,14"/>
+			<cuboid name="B-R-CP" min="83,10,-10" max="103,10,10"/>
+			<cuboid name="R-G-CP" min="-10,10,83" max="10,10,103"/>
+			<cuboid name="G-Y-CP" min="-83,10,-10" max="-103,10,9"/>
+			<cuboid name="Y-B-CP" min="-10,10,-83" max="10,10,-103"/>
+		</union>
+		<apply block="not-editable" block-place="deny-all" message="You may not modify Control Point.">
+			<region name="CP"/>
+		</apply>
+<!-- 領域外 -->
+		<apply block="outside" message="You may not modify void area.">
+			<rectangle min="-oo,-oo" max="oo,oo"/>
+		</apply>
+	</regions>
+
+<!-- クラスごとの初期装備 -->
+	<classes sticky="false">
+		<class name="Archer" description="Shoot enemies!" longdescription="You have powerful Bow" icon="Bow">
+			<kit parents="default">
+				<!-- 装備 -->
+				<chestplate damage="-3000" enchantment="protection explosions:2;protection projectile:2" bind="true">Chainmail Chestplate</chestplate>
+				<leggings damage="-3000" enchantment="protection explosions" bind="true">Chainmail Leggings</leggings>
+				<!-- ホットバー -->
+				<item slot="0" damage="-3000" enchantment="DAMAGE_ALL:1">Diamond Pickaxe</item>
+				<item slot="1" enchantment="ARROW_DAMAGE:2">Bow</item>
+				<item slot="3">Gold Sword</item>
+				<item slot="4">Shears</item>
+				<item slot="6">Water Bucket</item>
+				<item slot="7" amount="32">Vine</item>
+				<!-- インベントリ -->
+				<item slot="15" amount="64" damage="7">Step</item>
+				<item slot="18" amount="64">Arrow</item>
+				<item slot="19" amount="64">Arrow</item>
+				<item slot="21" amount="8">Piston Base</item>
+				<item slot="22" amount="16">Lever</item>
+				<item slot="24" amount="64">Nether Fence</item>
+				<item slot="25">Water Bucket</item>
+				<item slot="34">Water Bucket</item>
+			</kit>
+		</class>
+		<class name="Cannoner" description="Explode enemies!" longdescription="You can make TNT cannons" icon="TNT">
+			<kit parents="default">
+				<!-- 装備 -->
+				<chestplate damage="-3000" enchantment="protection explosions:3" bind="true">Leather Chestplate</chestplate>
+				<leggings damage="-3000" enchantment="protection explosions:3" bind="true">Leather Leggings</leggings>
+				<!-- ホットバー -->
+				<item slot="0" damage="-3000" enchantment="DAMAGE_ALL:1">Diamond Pickaxe</item>
+				<item slot="1" amount="64">Snow Ball</item>
+				<item slot="3">Gold Sword</item>
+				<item slot="4" amount="64">Stone Button</item>
+				<item slot="5" amount="64">TNT</item>
+				<item slot="6">Water Bucket</item>
+				<item slot="7" amount="64">Redstone</item>
+				<!-- インベントリ -->
+				<item slot="12" amount="3">Dispenser</item>
+				<item slot="13" amount="16">Stone Plate</item>
+				<item slot="14" amount="64">Redstone Torch On</item>
+				<item slot="15" amount="64" damage="7">Step</item>
+				<item slot="18" amount="64">TNT</item>
+				<item slot="19" amount="64">TNT</item>
+				<item slot="20" amount="16">Diode</item>
+				<item slot="21" amount="8">Piston Base</item>
+				<item slot="22" amount="16">Lever</item>
+				<item slot="23" amount="64">Redstone</item>
+				<item slot="24" amount="64">Nether Fence</item>
+				<item slot="25">Water Bucket</item>
+				<item slot="27">Shears</item>
+				<item slot="28" amount="32">Vine</item>
+				<item slot="29" amount="8">Redstone Comparator</item>
+				<item slot="30" amount="16">Ladder</item>
+				<item slot="31" amount="64">Trap Door</item>
+				<item slot="32" amount="64">Redstone Block</item>
+				<item slot="34">Water Bucket</item>
+			</kit>
+		</class>
+	</classes>
+<!-- CPの定義 -->
+	<controlpoints score-limit="3000">
+		<controlpoint name="Center" score="30">
+			<capture>
+				<cuboid min="-14,12,-14" max="14,19,14"></cuboid>
+			</capture>
+			<flag>
+				<cuboid min="-14,0,-14" max="14,13,14"></cuboid>
+			</flag>
+		</controlpoint>
+		<controlpoint name="Point B-R" score="13">
+			<capture>
+				<cuboid min="83,11,-10" max="103,18,10"></cuboid>
+			</capture>
+			<flag>
+				<cuboid min="83,10,-10" max="103,12,10"></cuboid>
+			</flag>
+		</controlpoint>
+		<controlpoint name="Point R-G" score="13">
+			<capture>
+				<cuboid min="-10,11,83" max="10,18,103"></cuboid>
+			</capture>
+			<flag>
+				<cuboid min="-10,10,83" max="10,12,103"></cuboid>
+			</flag>
+		</controlpoint>
+		<controlpoint name="Point G-Y" score="13">
+			<capture>
+				<cuboid min="-83,11,-10" max="-103,18,9"></cuboid>
+			</capture>
+			<flag>
+				<cuboid min="-83,10,-10" max="-103,12,9"></cuboid>
+			</flag>
+		</controlpoint>
+		<controlpoint name="Point Y-B" score="13">
+			<capture>
+				<cuboid min="-10,11,-83" max="10,18,-103"></cuboid>
+			</capture>
+			<flag>
+				<cuboid min="-10,10,-83" max="10,12,-103"></cuboid>
+			</flag>
+		</controlpoint>
+	</controlpoints>
+	<itemremove>
+		<item>Diamond Pickaxe</item>
+		<item>Gold Sword</item>
+		<item>Snow Ball</item>
+		<item>TNT</item>
+		<item>Redstone</item>
+		<item>Redstone Torch On</item>
+		<item>Redstone Comparator</item>
+		<item>Redstone Block</item>
+		<item>Diode</item>
+		<item>Water Bucket</item>
+		<item>Stone Button</item>
+		<item>Lever</item>
+		<item>Stone Plate</item>
+		<item>Trap Door</item>
+		<item>Ladder</item>
+		<item>Nether Fence</item>
+		<item>Shears</item>
+		<item>Vine</item>
+		<item>Piston Base</item>
+		<item>Dispenser</item>
+		<item>Step</item>
+		<item>Bow</item>
+		<item>Arrow</item>
+		<item>Iron Helmet</item>
+		<item>Iron Boots</item>
+		<item>Diamond Helmet</item>
+		<item>Diamond Boots</item>
+		<item>Golden Carrot</item>
+		<item>Stained Clay</item>
+		<item>Stained Glass</item>
+	</itemremove>
+	<killreward>
+		<item slot="9" amount="32">TNT</item>
+		<item slot="10" amount="32">Arrow</item>
+		<item amount="1">Golden Apple</item>
+	</killreward>
+<!-- ブロックの復元 -->
+	<!-- 中央 -->
+	<renewables>
+		<renewable rate="15" particles="false" sound="false" avoid-entities="true">
+			<region>
+				<cuboid min="-14,0,-14" max="14,14,14" />
+			</region>
+			<renew>Glass</renew>
+			<renew>Packed Ice</renew>
+			<renew>Stained Clay</renew>
+			<replace>Air</replace>
+			<replace>Water</replace>
+			<replace>Stationary Water</replace>
+		</renewable>
+	<!-- マップ全体 -->
+		<renewable rate="70" particles="false" sound="false" avoid-entities="true">
+			<region>
+				<cuboid min="-122,0,-122" max="122,28,122" />
+			</region>
+			<renew>Glass</renew>
+			<renew>Packed Ice</renew>
+			<renew>Stained_clay</renew>
+			<replace>Air</replace>
+			<replace>Water</replace>
+			<replace>Stationary Water</replace>
+		</renewable>
+	</renewables>
+<!-- 鉄とダイヤモンド -->
+	<blockdrops>
+		<rule>
+			<region>
+				<region name="map"/>
+			</region>
+			<filter>
+				<block>iron block</block>
+			</filter>
+			<drops>
+				<item enchantment="protection explosions">Iron Helmet</item>
+				<item enchantment="protection fall:3">Iron Boots</item>
+			</drops>
+			<replacement>Air</replacement>
+			<wrongtool>false</wrongtool><!-- 適正ツール使用時のみドロップ -->
+			<restore-time>5</restore-time><!-- 秒 -->
+			<direct>true</direct><!-- ブロック破壊でインベントリに直接入る -->
+		</rule>
+		<rule>
+			<region>
+				<region name="map"/>
+			</region>
+			<filter>
+				<block>diamond ore</block>
+			</filter>
+			<drops>
+				<item enchantment="protection explosions">Diamond Helmet</item>
+				<item enchantment="protection fall:3">Diamond Boots</item>
+			</drops>
+			<replacement>Bedrock</replacement>
+			<wrongtool>false</wrongtool>
+			<restore-time>60</restore-time>
+			<direct>true</direct>
+		</rule>
+	</blockdrops>
+<!-- 限界高度 -->
+	<maxbuildheight>28</maxbuildheight>
+<!-- チュートリアル -->
+	<include src="tutorial.xml"/>
+	<tutorial>
+		<stage title="Control Point (CP)">
+			<message>
+				<line>This map is a "Control Point"(CP) map.</line>
+				<line>The objective is to capture the control point.</line>
+			</message>
+			<message lang="ja_JP">
+				<line>このマップは "Control Point(コントロールポイント)"(CP)マップです。</line>
+				<line>コントロールポイントを制圧し、先に3000ポイント集める事が目標です。</line>
+			</message>
+			<teleport>
+				<point yaw="180" piitch="60">0,40,57</point>
+			</teleport>
+		</stage>
+<!-- スポーン場所の説明 -->
+		<stage title="Blue-Base">
+		    <message>
+    			 <line>This is blue team spawn point.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>青チームのスポーン場所はここです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="45" pitch="0">63,8,-63</point>
+			</teleport>
+		</stage>
+		<stage title="Red-Base">
+		    <message>
+    			 <line>This is red team spawn point.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>赤チームのスポーン場所はここです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="135" pitch="0">63,8,63</point>
+			</teleport>
+		</stage>
+		<stage title="Green-Base">
+		    <message>
+    			 <line>This is green team spawn point.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>緑チームのスポーン場所はここです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="225" pitch="0">-63,8,63</point>
+			</teleport>
+		</stage>
+		<stage title="Yellow-Base">
+		    <message>
+    			 <line>This is yellow team spawn point.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>黄チームのスポーン場所はここです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="315" pitch="0">-63,8,-63</point>
+			</teleport>
+		</stage>
+<!-- CPの場所の説明 -->
+		<stage title="Center">
+		    <message>
+    			 <line>This is Center point.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>ここがCenterです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="15">0,25,-29</point>
+			</teleport>
+		</stage>
+		<stage title="Center">
+		    <message>
+    			 <line>This is Point B-R.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>ここがPoint B-Rです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="90" pitch="15">112,21,0</point>
+			</teleport>
+		</stage>
+		<stage title="Center">
+		    <message>
+    			 <line>This is Point R-G.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>ここがPoint R-Gです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="180" pitch="15">0,21,112</point>
+			</teleport>
+		</stage>
+		<stage title="Center">
+		    <message>
+    			 <line>This is Point G-Y.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>ここがPoint G-Yです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="-90" pitch="15">-112,21,0</point>
+			</teleport>
+		</stage>
+		<stage title="Center">
+		    <message>
+    			 <line>This is Point Y-B.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>ここがPoint Y-Bです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="15">0,21,-112</point>
+			</teleport>
+		</stage>
+	</tutorial>
+</map>
