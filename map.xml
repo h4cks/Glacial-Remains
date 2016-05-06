@@ -394,7 +394,7 @@
 				<line>These blocks will be restored when you break in a while.</line>
 			</message>
 		    <message lang="ja_JP">
-				<line>ダイヤモンドブロックを壊すとダイヤモンドのの頭と足の装備がインベントリに入ります。</line>
+				<line>ダイヤモンドブロックを壊すとダイヤモンドの頭と足の装備がインベントリに入ります。</line>
 				<line>破壊したブロックは一定時間が経つと復活します。</line>
 		    </message>
    			<teleport>
