@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <map proto="1.3.3">
 	<name>Glacial Remains</name>
-	<version>0.2.0</version>
+	<version>0.2.1</version>
 	<objective>コントロールポイントの制圧 / Capture the Control Point</objective>
 
 	<authors>
@@ -93,7 +93,7 @@
 <!-- 領域定義 -->
 	<regions>
 		<rectangle name="map" min="-123,-123" max="123,123" /><!-- マップ全体 -->
-<!-- チーム拠点定義と保護 -->
+		<!-- チーム拠点定義と保護 -->
 		<union name="Base">
 			<cuboid name="blue-base" min="51,0,-76" max="75,255,-52"/>
 			<cuboid name="red-base" min="51,0,51" max="75,255,75"/>
@@ -103,18 +103,18 @@
 		<apply block="not-editable" block-place="deny-all" message="You may not modify bases.">
 			<region name="Base"/>
 		</apply>
-<!-- CP定義と保護 -->
+		<!-- CP定義と保護 -->
 		<union name="CP">
 			<cuboid name="center-CP" min="-14,0,-14" max="14,11,14"/>
 			<cuboid name="B-R-CP" min="83,10,-10" max="103,10,10"/>
 			<cuboid name="R-G-CP" min="-10,10,83" max="10,10,103"/>
 			<cuboid name="G-Y-CP" min="-83,10,-10" max="-103,10,9"/>
 			<cuboid name="Y-B-CP" min="-10,10,-83" max="10,10,-103"/>
-		</union>5e
+		</union>
 		<apply block="not-editable" block-place="deny-all" message="You may not modify Control Point.">
 			<region name="CP"/>
 		</apply>
-<!-- 領域外 -->
+		<!-- 領域外 -->
 		<apply block="outside" message="You may not modify void area.">
 			<rectangle min="-oo,-oo" max="oo,oo"/>
 		</apply>
@@ -181,9 +181,9 @@
 			</kit>
 		</class>
 	</classes>
-<!-- CPの定義 -->
+	<!-- CPの定義 -->
 	<controlpoints score-limit="3000">
-		<controlpoint name="Center" score="30">
+		<controlpoint name="Center" score="90">
 			<capture>
 				<cuboid min="-14,12,-14" max="14,19,14"></cuboid>
 			</capture>
@@ -191,7 +191,7 @@
 				<cuboid min="-14,0,-14" max="14,13,14"></cuboid>
 			</flag>
 		</controlpoint>
-		<controlpoint name="Point B-R" score="13">
+		<controlpoint name="Point B-R" score="36">
 			<capture>
 				<cuboid min="83,11,-10" max="103,18,10"></cuboid>
 			</capture>
@@ -199,7 +199,7 @@
 				<cuboid min="83,10,-10" max="103,12,10"></cuboid>
 			</flag>
 		</controlpoint>
-		<controlpoint name="Point R-G" score="13">
+		<controlpoint name="Point R-G" score="36">
 			<capture>
 				<cuboid min="-10,11,83" max="10,18,103"></cuboid>
 			</capture>
@@ -207,7 +207,7 @@
 				<cuboid min="-10,10,83" max="10,12,103"></cuboid>
 			</flag>
 		</controlpoint>
-		<controlpoint name="Point G-Y" score="13">
+		<controlpoint name="Point G-Y" score="36">
 			<capture>
 				<cuboid min="-83,11,-10" max="-103,18,9"></cuboid>
 			</capture>
@@ -215,7 +215,7 @@
 				<cuboid min="-83,10,-10" max="-103,12,9"></cuboid>
 			</flag>
 		</controlpoint>
-		<controlpoint name="Point Y-B" score="13">
+		<controlpoint name="Point Y-B" score="36">
 			<capture>
 				<cuboid min="-10,11,-83" max="10,18,-103"></cuboid>
 			</capture>
@@ -256,6 +256,7 @@
 		<item>Stained Clay</item>
 		<item>Stained Glass</item>
 	</itemremove>
+
 <!-- キル報酬 -->
 <!-- クラス共通 -->
 	<killreward>
@@ -274,6 +275,7 @@
 		</filter>
 		<item slot="9" amount="32">TNT</item>
 	</killreward>
+
 <!-- ブロックの復元 -->
 	<!-- 中央 -->
 	<renewables>
@@ -288,7 +290,8 @@
 			<replace>Water</replace>
 			<replace>Stationary Water</replace>
 		</renewable>
-	<!-- マップ全体 -->
+
+		<!-- マップ全体 -->
 		<renewable rate="70" particles="false" sound="false" avoid-entities="true">
 			<region>
 				<cuboid min="-122,0,-122" max="122,28,122" />
@@ -303,7 +306,8 @@
 			<replace>Stationary Water</replace>
 		</renewable>
 	</renewables>
-<!-- 鉄とダイヤモンド -->
+
+	<!-- 鉄とダイヤモンド -->
 	<blockdrops>
 		<rule>
 			<region>
@@ -337,7 +341,8 @@
 			<restore-time>60</restore-time>
 			<direct>true</direct>
 		</rule>
-<!-- ブロックドロップ拒否 -->
+
+	<!-- ブロックドロップ拒否 -->
 		<rule>
 			<region>
 				<region name="map"/>
@@ -349,8 +354,10 @@
 			</filter>
 		</rule>
 	</blockdrops>
+
 <!-- 限界高度 -->
 	<maxbuildheight>28</maxbuildheight>
+
 <!-- チュートリアル -->
 	<include src="tutorial.xml"/>
 	<tutorial>
@@ -365,6 +372,33 @@
 			</message>
 			<teleport>
 				<point yaw="180" piitch="60">0,40,57</point>
+			</teleport>
+		</stage>
+<!-- ブロックドロップの説明 -->
+		<stage title="Iron-Drop">
+		    <message>
+				<line>You can get iron helmet and boots if you break iron blocks.</line>
+				<line>These blocks will be restored when you break in a bit.</line>
+			</message>
+		    <message lang="ja_JP">
+				<line>鉄ブロックを壊すと鉄の頭と足の装備がインベントリに入ります。</line>
+				<line>破壊したブロックは一定時間が経つと復活します。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="-135" pitch="30">103,7,-44</point>
+			</teleport>
+		</stage>
+		<stage title="Diamond-Drop">
+		    <message>
+		    	<line>You can get iron helmet and boots if you break iron blocks.</line>
+				<line>These blocks will be restored when you break in a while.</line>
+			</message>
+		    <message lang="ja_JP">
+				<line>ダイヤモンドブロックを壊すとダイヤモンドのの頭と足の装備がインベントリに入ります。</line>
+				<line>破壊したブロックは一定時間が経つと復活します。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="45" pitch="45">9,15,-9</point>
 			</teleport>
 		</stage>
 <!-- スポーン場所の説明 -->
@@ -412,13 +446,15 @@
    				<point yaw="315" pitch="0">-63,8,-63</point>
 			</teleport>
 		</stage>
-<!-- CPの場所の説明 -->
+<!-- CPの場所の説明 -->	
 		<stage title="Center">
 		    <message>
     			 <line>This is Center point.</line>
+    			 <line>You can break Control Points except wools.</line>
 			</message>
 		    <message lang="ja_JP">
 			     <line>ここがCenterです。</line>
+			     <line>コントロールポイントの羊毛部分は破壊できません。</line>
 		    </message>
    			<teleport>
    				<point yaw="0" pitch="15">0,25,-29</point>
